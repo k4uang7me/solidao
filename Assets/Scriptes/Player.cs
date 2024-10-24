@@ -14,9 +14,18 @@ public class Play : MonoBehaviour
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 anglerotation;
+    private bool doublejump;
+    private int countJump = 0;
+    private bool isJumping = false;
+    private AudioSource audioP;
     [SerializeField] private bool pegando;
     [SerializeField] private bool podepegar;
     [SerializeField] private List<GameObject> inventario = new List<GameObject>();
+    [Header("son do personagem")]
+    [SerializeField] private AudioClip pulo;
+    [SerializeField] private AudioClip queda;
+    [SerializeField] private AudioClip morte;
+    [SerializeField] private AudioClip moeda;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,7 +68,7 @@ public class Play : MonoBehaviour
             animator.SetBool("AndarPraTras", false);
         }
 
-        //avitar o bug da movimentação
+        //avitar o bug da movimentaï¿½ï¿½o
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
 
         {
@@ -188,7 +197,7 @@ public class Play : MonoBehaviour
             }
             else
             {
-                Debug.Log("você não tem a chave");
+                Debug.Log("vocï¿½ nï¿½o tem a chave");
             }
         }
 
