@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Dorr : MonoBehaviour
+public class Door : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string sceneToLoad; // Nome da cena para carregar quando o jogador entra na porta
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player")) // Verifica se o objeto que colidiu é o jogador
+        {
+            SceneManager.LoadScene(sceneToLoad); // Carrega a cena especificada
+        }
     }
 }

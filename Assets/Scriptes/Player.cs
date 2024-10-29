@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Play : MonoBehaviour
+public class Player : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private bool estaVivo = true;
@@ -26,6 +26,7 @@ public class Play : MonoBehaviour
     [SerializeField] private AudioClip queda;
     [SerializeField] private AudioClip morte;
     [SerializeField] private AudioClip moeda;
+    private Diretor diretor;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,88 +35,98 @@ public class Play : MonoBehaviour
         anglerotation = new Vector3(0, 90, 0);
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        diretor = FindObjectOfType<Diretor>();
     }
 
     // Update is called once per frame
 
     void Update()
     {
-        TurnAround();
-
-        //andar
-        if (Input.GetKey(KeyCode.W))
-
+        if (estaVivo)
         {
-            animator.SetBool("Andar", true);
-            Walk();
-        }
-        else if (Input.GetKey(KeyCode.S))
+            TurnAround();
 
+            //andar
+            if (Input.GetKey(KeyCode.W))
+
+            {
+                animator.SetBool("Andar", true);
+                Walk();
+            }
+            else if (Input.GetKey(KeyCode.S))
+
+            {
+                animator.SetBool("AndarPraTras", true);
+                animator.SetBool("Andar", false);
+                Walk();
+            }
+            else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+
+            {
+                animator.SetBool("Andar", false);
+            }
+            else
+
+            {
+                animator.SetBool("Andar", false);
+                animator.SetBool("AndarPraTras", false);
+            }
+
+            //avitar o bug da movimenta��o
+            if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
+
+            {
+                animator.SetBool("Andar", false);
+                animator.SetBool("AndarPraTras", false);
+            }
+
+            //pulo
+            if (Input.GetKeyDown(KeyCode.Space) && !estaPulando)
+
+            {
+                animator.SetTrigger("Pular");
+                Jump();
+            }
+
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                animator.SetTrigger("Pegando");
+                pegando = true;
+            }
+
+            if (Input.GetMouseButtonDown(0))
+
+            {
+                animator.SetTrigger("Ataque");
+            }
+
+            //correr
+            if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
+
+            {
+                animator.SetBool("Correndo", true);
+                Walk(8);
+            }
+            else
+
+            {
+                animator.SetBool("Correndo", false);
+            }
+
+            if (!estaVivo)
+
+            {
+                animator.SetTrigger("EsaVivo");
+                estaVivo = true;
+            }
+        }
+
+        if(!estaVivo)
         {
-            animator.SetBool("AndarPraTras", true);
-            animator.SetBool("andar", false);
-            Walk();
+            //Destroy(this.gameObject);
         }
-        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-
-        {
-            animator.SetBool("andar", false);
-        }
-        else
-
-        {
-            animator.SetBool("Andar", false);
-            animator.SetBool("AndarPraTras", false);
-        }
-
-        //avitar o bug da movimenta��o
-        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
-
-        {
-            animator.SetBool("Andar", false);
-            animator.SetBool("AndarPraTras", false);
-        }
-
-        //pulo
-        if (Input.GetKeyDown(KeyCode.Space) && !estaPulando)
-
-        {
-            animator.SetTrigger("Pular");
-            Jump();
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            animator.SetTrigger("Pegando");
-            pegando = true;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-
-        {
-            animator.SetTrigger("Ataque");
-        }
-
-        //correr
-        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
-
-        {
-            animator.SetBool("Correndo", true);
-            Walk(8);
-        }
-        else
-
-        {
-            animator.SetBool("Correndo", false);
-        }
-
-        if (!estaVivo)
-
-        {
-            animator.SetTrigger("EsaVivo");
-            estaVivo = true;
-        }
+        
     }
 
     private void Walk(float velo = 1)
@@ -147,13 +158,18 @@ public class Play : MonoBehaviour
         rb.MoveRotation(rb.rotation * deltaRotation);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision other)
 
     {
-        if (collision.gameObject.CompareTag("Chao"))
+        if (other.gameObject.CompareTag("Chao"))
         {
             estaPulando = false;
             animator.SetBool("EstaNoChao", true);
+        }
+        if (other.gameObject.CompareTag("Morte"))
+        {
+            estaVivo = false;
+
         }
     }
 
@@ -243,6 +259,10 @@ public class Play : MonoBehaviour
             bauTesouro.RemoverConteudoBau();
 
         }
+    }
+    public bool VerificaSePlayerEstaVivo()
+    {
+        return estaVivo;
     }
 
 }

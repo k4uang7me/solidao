@@ -8,6 +8,6 @@ public class Menu : MonoBehaviour
 {
 public void play()
 {
-    SceneManager.LoadScene("New Scene");
+    SceneManager.LoadScene("Inicio");
 }
 }
