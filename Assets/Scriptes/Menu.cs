@@ -10,4 +10,8 @@ public void play()
 {
     SceneManager.LoadScene("Inicio");
 }
+public void Mapa2()
+{
+   SceneManager.LoadScene("mapa2");
+}
 }
