@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int forcaPulo;
     [SerializeField] private float velocidade;
     [SerializeField] private bool temChave;
+    private int pontos = 0;
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 anglerotation;
@@ -161,15 +162,32 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter(Collision other)
 
     {
-        if (other.gameObject.CompareTag("Chao"))
+        if (other.gameObject.CompareTag("Chao") || other.gameObject.CompareTag("Plataforma"))
         {
             estaPulando = false;
             animator.SetBool("EstaNoChao", true);
         }
-        if (other.gameObject.CompareTag("Morte"))
+       
+            if (other.gameObject.CompareTag("Morte"))
         {
             estaVivo = false;
 
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Plataforma"))
+        {
+            gameObject.transform.parent = collision.transform;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Plataforma"))
+        {
+            gameObject.transform.parent = null;
         }
     }
 
@@ -217,9 +235,7 @@ public class Player : MonoBehaviour
             }
         }
 
-
-
-        pegando = false;
+            pegando = false;
 
     }
     private bool VerificaChave(int chave)
@@ -260,10 +276,23 @@ public class Player : MonoBehaviour
 
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("moeda"))
+        {
+            audioP.PlayOneShot(moeda);
+            pontos++;
+            Destroy(other.gameObject);
+        }
+    }
+
     public bool VerificaSePlayerEstaVivo()
     {
         return estaVivo;
     }
+
+
 
 }
 

@@ -7,6 +7,8 @@ TagManager:
   - Chao
   - Lava
   - Morte
+  - Plataforma
+  - moeda
   layers:
   - Default
   - TransparentFX
