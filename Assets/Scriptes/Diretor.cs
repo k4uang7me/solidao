@@ -45,10 +45,6 @@ public class Diretor : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void Replay2()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
     private static void Sair()
     {
         Application.Quit();
